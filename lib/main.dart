@@ -59,12 +59,17 @@ class FirstPage extends StatelessWidget {
                 MaterialPageRoute(builder: (context) => const MyHomePage()),
               );
             },
-            child: Text("Map",
+            child: Row(children: <Widget> [
+              Text("Open Map",
                 style: GoogleFonts.abel(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 25,
+                  fontSize: 35,
                 )),
-          ),
+                Icon(
+                  Icons.map,
+                  color: Colors.white,
+                  size: 40,
+            )]
+          ),)
         ),
         Container(
           height: 100,
@@ -73,17 +78,21 @@ class FirstPage extends StatelessWidget {
             onPressed: () {
               Navigator.push(context,
               MaterialPageRoute(builder: (context) => const GeoPage()),
-              );
+      );
             },
-            child: Text("Share Location",
-                style: GoogleFonts.abel(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 25,
-                )),
-          ),
-        ),
-      ],
-    );
+            child: Row(children: <Widget>[
+              Text("Share Location",
+                  style: GoogleFonts.abel(
+                  fontSize: 35,
+                )), 
+                // SizedBox(width: 3),
+                Icon(
+                  Icons.add_location_alt_outlined,
+                  color: Colors.white,
+                  size: 40.0,
+                )])),
+          )],
+        );
   }
 }
 
