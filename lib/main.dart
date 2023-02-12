@@ -16,7 +16,7 @@ class FirstPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Colors.lightblue,
+      backgroundColor: const Color.fromARGB(255, 180, 230, 255)
       appBar: AppBar(
         title: Row(
           children: <Widget>[
