@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'dart:async';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 void main() => runApp(MyApp());
 
@@ -16,7 +18,7 @@ class FirstPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 180, 230, 255)
+      backgroundColor: const Color.fromARGB(255, 180, 230, 255),
       appBar: AppBar(
         title: Row(
           children: <Widget>[
@@ -60,7 +62,7 @@ class FirstPage extends StatelessWidget {
             child: Text("Map",
                 style: GoogleFonts.abel(
                   fontWeight: FontWeight.bold,
-                  fontSize: 30,
+                  fontSize: 25,
                 )),
           ),
         ),
@@ -72,7 +74,7 @@ class FirstPage extends StatelessWidget {
             child: Text("Share Location",
                 style: GoogleFonts.abel(
                   fontWeight: FontWeight.bold,
-                  fontSize: 30,
+                  fontSize: 25,
                 )),
           ),
         ),
@@ -89,11 +91,14 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final Completer<GoogleMapController> _controller = Completer();
   var _latitude = '';
   var _longitude = '';
   var _altitude = '';
   var _speed = '';
   var _address = '';
+
+  static const LatLng sourceLocation = LatLng(35.913200, -79.055847);
 
   Future<void> _updatePosition() async {
     Position pos = await _determinePosition();
@@ -144,24 +149,89 @@ class _MyHomePageState extends State<MyHomePage> {
     return await Geolocator.getCurrentPosition();
   }
 
+  
+  BitmapDescriptor markerIcon = BitmapDescriptor.defaultMarker;
+
+  @override
+  void initState() {
+    addCustomIcon();
+    super.initState();
+  }
+
+  void addCustomIcon() {
+    BitmapDescriptor.fromAssetImage(
+      const ImageConfiguration(), "assets/rsz_busmarker.png")
+      .then(
+        (icon) {
+          setState(() {
+            markerIcon = icon;
+          });
+        }
+      );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: Text("Location")),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              const Text('Your Current Location'),
-              Text(_latitude),
-              Text(_longitude),
-            ],
-          ),
+        body: GoogleMap(initialCameraPosition: CameraPosition(target: sourceLocation, zoom: 14.5
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: _updatePosition,
-          tooltip: 'Get Current Location',
-          child: const Icon(Icons.change_circle_outlined),
-        ));
+        markers: {
+            Marker(
+              markerId: const MarkerId("marker1"),
+              position: const LatLng(35.913200, -79.055847),
+              icon: markerIcon,
+            ),
+            Marker(
+              markerId: const MarkerId("marker2"),
+              position: const LatLng(35.923500, -79.055897),
+              icon: markerIcon,
+            ),
+          },
+        ),
+      );
   }
 }
+  //       body: Center(
+  //         child: Column(
+  //           mainAxisAlignment: MainAxisAlignment.center,
+  //           children: <Widget>[
+  //             const Text('Your Current Location'),
+  //             Text(_latitude),
+  //             Text(_longitude),
+  //           ],
+  //         ),
+  //       ),
+  //       floatingActionButton: FloatingActionButton(
+  //         onPressed: _updatePosition,
+  //         tooltip: 'Get Current Location',
+  //         child: const Icon(Icons.change_circle_outlined),
+  //       ));
+  // }
+
+//  class OrderTrackingPage extends StatefulWidget {
+//   const OrderTrackingPage({Key? key}) : super(key: key);
+
+//   @override
+//   State<OrderTrackingPage> createState() => OrderTrackingPageState();
+// }
+
+// class OrderTrackingPageState extends State<OrderTrackingPage> {
+//   final Completer<GoogleMapController> _controller = Completer();
+
+  // static const LatLng sourceLocation = LatLng(37.33500926, -122.03272188);
+  // static const LatLng destination = LatLng(37.33429383, -122.06600055);
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: const Text(
+//           "Track order",
+//           style: TextStyle(color: Colors.black, fontSize: 16),
+//         ),
+//       ),
+//       body: GoogleMap(initialCameraPosition: CameraPosition(target: sourceLocation, zoom: 14.5)),
+//       );
+//   }
+// }

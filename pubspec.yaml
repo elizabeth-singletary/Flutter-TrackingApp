@@ -38,6 +38,9 @@ dependencies:
   google_fonts: ^4.0.3
   geolocator: ^9.0.2
   geocoding: ^2.0.5
+  flutter_polyline_points: ^1.0.0
+  google_maps_flutter: ^2.1.7
+  flutter_svg: ^1.1.0
 
 dev_dependencies:
   flutter_test:
@@ -63,6 +66,7 @@ flutter:
   assets:
     - assets/bus.png
     - assets/GoogleMapTA.webp
+    - assets/rsz_busmarker.png
 
   # To add assets to your application, add an assets section, like this:
   # An image asset can refer to one or more resolution-specific "variants", see
