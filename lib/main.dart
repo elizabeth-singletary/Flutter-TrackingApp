@@ -70,7 +70,11 @@ class FirstPage extends StatelessWidget {
           height: 100,
           padding: const EdgeInsets.all(25),
           child: ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const GeoPage()),
+              );
+            },
             child: Text("Share Location",
                 style: GoogleFonts.abel(
                   fontWeight: FontWeight.bold,
@@ -92,6 +96,60 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final Completer<GoogleMapController> _controller = Completer();
+
+  static const LatLng sourceLocation = LatLng(35.913200, -79.055847);
+  
+  BitmapDescriptor markerIcon = BitmapDescriptor.defaultMarker;
+
+  @override
+  void initState() {
+    addCustomIcon();
+    super.initState();
+  }
+
+  void addCustomIcon() {
+    BitmapDescriptor.fromAssetImage(
+      const ImageConfiguration(), "assets/rsz_busmarker.png")
+      .then(
+        (icon) {
+          setState(() {
+            markerIcon = icon;
+          });
+        }
+      );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(title: Text("Location")),
+        body: GoogleMap(initialCameraPosition: CameraPosition(target: sourceLocation, zoom: 14.5
+        ),
+        markers: {
+            Marker(
+              markerId: const MarkerId("marker1"),
+              position: const LatLng(35.913200, -79.055847),
+              icon: markerIcon,
+            ),
+            Marker(
+              markerId: const MarkerId("marker2"),
+              position: const LatLng(35.923500, -79.055897),
+              icon: markerIcon,
+            ),
+          },
+        ),
+      );
+  }
+}
+
+class GeoPage extends StatefulWidget {
+  const GeoPage({Key? key}) : super(key: key);
+
+  @override
+  State<GeoPage> createState() => _GeoPageState();
+}
+
+class _GeoPageState extends State<GeoPage> {
   var _latitude = '';
   var _longitude = '';
   var _altitude = '';
@@ -149,89 +207,24 @@ class _MyHomePageState extends State<MyHomePage> {
     return await Geolocator.getCurrentPosition();
   }
 
-  
-  BitmapDescriptor markerIcon = BitmapDescriptor.defaultMarker;
-
-  @override
-  void initState() {
-    addCustomIcon();
-    super.initState();
-  }
-
-  void addCustomIcon() {
-    BitmapDescriptor.fromAssetImage(
-      const ImageConfiguration(), "assets/rsz_busmarker.png")
-      .then(
-        (icon) {
-          setState(() {
-            markerIcon = icon;
-          });
-        }
-      );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: Text("Location")),
-        body: GoogleMap(initialCameraPosition: CameraPosition(target: sourceLocation, zoom: 14.5
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              const Text('Your Current Location'),
+              Text(_latitude),
+              Text(_longitude),
+            ],
+          ),
         ),
-        markers: {
-            Marker(
-              markerId: const MarkerId("marker1"),
-              position: const LatLng(35.913200, -79.055847),
-              icon: markerIcon,
-            ),
-            Marker(
-              markerId: const MarkerId("marker2"),
-              position: const LatLng(35.923500, -79.055897),
-              icon: markerIcon,
-            ),
-          },
-        ),
-      );
+        floatingActionButton: FloatingActionButton(
+          onPressed: _updatePosition,
+          tooltip: 'Get Current Location',
+          child: const Icon(Icons.change_circle_outlined),
+        ));
   }
 }
-  //       body: Center(
-  //         child: Column(
-  //           mainAxisAlignment: MainAxisAlignment.center,
-  //           children: <Widget>[
-  //             const Text('Your Current Location'),
-  //             Text(_latitude),
-  //             Text(_longitude),
-  //           ],
-  //         ),
-  //       ),
-  //       floatingActionButton: FloatingActionButton(
-  //         onPressed: _updatePosition,
-  //         tooltip: 'Get Current Location',
-  //         child: const Icon(Icons.change_circle_outlined),
-  //       ));
-  // }
-
-//  class OrderTrackingPage extends StatefulWidget {
-//   const OrderTrackingPage({Key? key}) : super(key: key);
-
-//   @override
-//   State<OrderTrackingPage> createState() => OrderTrackingPageState();
-// }
-
-// class OrderTrackingPageState extends State<OrderTrackingPage> {
-//   final Completer<GoogleMapController> _controller = Completer();
-
-  // static const LatLng sourceLocation = LatLng(37.33500926, -122.03272188);
-  // static const LatLng destination = LatLng(37.33429383, -122.06600055);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text(
-//           "Track order",
-//           style: TextStyle(color: Colors.black, fontSize: 16),
-//         ),
-//       ),
-//       body: GoogleMap(initialCameraPosition: CameraPosition(target: sourceLocation, zoom: 14.5)),
-//       );
-//   }
-// }
